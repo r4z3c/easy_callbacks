@@ -56,6 +56,8 @@ module EasyCallbacks
             raise error if error
 
             execute_callbacks_for :after, target, nil, *args, &block
+
+            result
           end unless method_defined? original_method_name_for(target)
         end
 
