@@ -1,0 +1,89 @@
+= Easy Callbacks
+
+Provide callbacks support for Ruby classes.
+
+== Example
+
+    class SomeClass
+
+        def some_method(some_arg)
+            puts some_arg
+        end
+
+        include EasyCallbacks::Base
+
+        # named callbacks
+        before :some_method, :do_it_before
+        around :some_method, :do_it_around
+        after :some_method, :do_it_after
+
+        # anonymous callbacks
+        before :some_method do |some_arg, callback_details|
+            # ...
+        end
+
+        def do_it_before(some_arg, callback_details)
+            # ...
+        end
+
+        def do_it_around(some_arg, callback_details)
+            # ...
+        end
+
+        def do_it_after(some_arg, callback_details)
+            # ...
+        end
+
+    end
+
+=== Callback Details
+
+The second argument is a Hash containing some callback call details:
+
+For named callbacks:
+
+    {
+        class: SomeClass,
+        target: :some_method,
+        type: :before,
+        callback_name: :do_it_before,
+        proc: nil
+    }
+
+For anonymous callbacks:
+
+    {
+        class: SomeClass,
+        target: :some_method,
+        type: :before,
+        callback_name: nil,
+        proc: '#<Proc:0x00000002655a20@...>'
+    }
+
+For around callbacks (with success):
+
+    {
+        class: SomeClass,
+        target: :some_method,
+        type: :around,
+        callback_name: :do_it_around,
+        proc: nil,
+        return_type: :success,
+        return_object: nil
+    }
+
+For around callbacks (with error):
+
+    {
+        class: SomeClass,
+        target: :some_method,
+        type: :around,
+        callback_name: :do_it_around,
+        proc: nil,
+        return_type: :error,
+        return_object: '#<StandardError: StandardError>'
+    }
+
+===
+
+{<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate" />}[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9KHDLTWYK9A62]
