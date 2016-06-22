@@ -1,0 +1,4 @@
+# 0.1.0
+
+- adding 'object' key to 'callback_details' providing context to anonymous callbacks
+- removing 'method_missing' strategy from base module, this isn't strictly necessary
