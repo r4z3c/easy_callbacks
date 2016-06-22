@@ -7,25 +7,25 @@ module EasyCallbacks
 
       include MethodDecorator
 
-      TYPES = %w(before around after)
-
       class << self
 
         attr_accessor :callbacks
 
-        def method_missing(method_sym, *args, &block)
-          if TYPES.include? method_sym.to_s
-            target = args.first
-            callback_name = args.count.eql?(1) ? nil : args.last
-            handle_method_missing method_sym, target, callback_name, &block
-          else
-            super method_sym, *args, &block
-          end
+        def before(target, callback_name=nil, &block)
+          handle_callback_definition :before, target, callback_name, &block
+        end
+
+        def around(target, callback_name=nil, &block)
+          handle_callback_definition :around, target, callback_name, &block
+        end
+
+        def after(target, callback_name=nil, &block)
+          handle_callback_definition :after, target, callback_name, &block
         end
 
         private
 
-        def handle_method_missing(type, target, callback_name, &block)
+        def handle_callback_definition(type, target, callback_name, &block)
           push_callback type, target, callback_name, &block
           decorate_target target
         end
@@ -59,10 +59,6 @@ module EasyCallbacks
 
             result
           end unless method_defined? original_method_name_for(target)
-        end
-
-        def respond_to_missing?(target, include_private=false)
-          TYPES.include?(target) ? true : super ;
         end
 
       end
