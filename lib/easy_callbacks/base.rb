@@ -82,7 +82,12 @@ module EasyCallbacks
 
           arguments.last.merge! additional_options if additional_options
 
-          proc.nil? ? send(cn, *arguments, &block) : proc.call(*arguments, &block)
+          if proc.nil?
+            send(cn, *arguments, &block)
+          else
+            arguments.last.merge! object: self
+            proc.nil? ? send(cn, *arguments, &block) : proc.call(*arguments, &block)
+          end
         end
       end
 
