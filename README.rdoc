@@ -54,10 +54,11 @@ For anonymous callbacks:
 
     {
         class: SomeClass,
+        object: #<SomeClass:0x00000002b65ab0>,
         target: :some_method,
         type: :before,
         callback_name: nil,
-        proc: '#<Proc:0x00000002655a20@...>'
+        proc: #<Proc:0x00000002655a20@...>
     }
 
 For around callbacks (with success):
@@ -81,8 +82,34 @@ For around callbacks (with error):
         callback_name: :do_it_around,
         proc: nil,
         return_type: :error,
-        return_object: '#<StandardError: StandardError>'
+        return_object: #<StandardError: StandardError>
     }
+
+== Singleton Classes Support
+
+It works too:
+
+    class SomeClass
+
+        class << self
+
+            def some_method(some_arg)
+                puts some_arg
+            end
+
+            include EasyCallbacks::Base
+
+            # ...
+
+        end
+
+    end
+
+    SomeClass.some_method 'some arg'
+
+== Changelog
+
+See 'changelog.txt' to follow the progress.
 
 ===
 
