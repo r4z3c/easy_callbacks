@@ -1,3 +1,8 @@
+# 0.1.1
+
+- fixing callbacks initialization bug: when trying to 'execute_callbacks_for' for a type (e.g. 'before') that doesn't
+  received pushes, it crashes by trying call 'select' to a nil object
+
 # 0.1.0
 
 - adding 'object' key to 'callback_details' providing context to anonymous callbacks

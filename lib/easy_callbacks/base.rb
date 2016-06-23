@@ -31,15 +31,17 @@ module EasyCallbacks
         end
 
         def push_callback(type, target, callback_name)
-          initialize_callbacks type
+          initialize_callbacks
           self.callbacks[type].push target: target,
                                     callback_name: callback_name,
                                     proc: (block_given? ? Proc.new : nil)
         end
 
-        def initialize_callbacks(type)
+        def initialize_callbacks
           self.callbacks ||= {}
-          self.callbacks[type] ||= []
+          self.callbacks[:before] ||= []
+          self.callbacks[:around] ||= []
+          self.callbacks[:after] ||= []
         end
 
         def decorate_target(target)
