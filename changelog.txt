@@ -1,3 +1,7 @@
+# 0.1.2
+
+- setting 'execute_callbacks_for' (and related methods) as private
+
 # 0.1.1
 
 - fixing callbacks initialization bug: when trying to 'execute_callbacks_for' for a type (e.g. 'before') that doesn't

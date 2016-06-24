@@ -65,6 +65,8 @@ module EasyCallbacks
 
       end
 
+      private
+
       def execute_callbacks_for(type, target, additional_options, *args, &block)
         get_callbacks_for(type).select { |c| c[:target].eql? target }.each do |callback|
           cn = callback[:callback_name]
@@ -84,7 +86,7 @@ module EasyCallbacks
             send(cn, *arguments, &block)
           else
             arguments.last.merge! object: self
-            proc.nil? ? send(cn, *arguments, &block) : proc.call(*arguments, &block)
+            proc.call(*arguments, &block)
           end
         end
       end
