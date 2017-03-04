@@ -1,89 +1,104 @@
 = Easy Callbacks
 
-Provide callbacks support for Ruby classes.
+Provides callbacks support for Ruby classes.
 
 == Example
 
+For a given class:
+
     class SomeClass
 
-        def some_method(some_arg)
-            puts some_arg
-        end
+      def some_method(some_arg)
+        puts "some_method: #{some_arg}"
+      end
 
-        include EasyCallbacks::Base
+      def before_some_method(some_arg)
+        puts "before_some_method: #{some_arg}"
+      end
 
-        # named callbacks
-        before :some_method, :do_it_before
-        around :some_method, :do_it_around
-        after :some_method, :do_it_after
-
-        # anonymous callbacks
-        before :some_method do |some_arg, callback_details|
-            # ...
-        end
-
-        def do_it_before(some_arg, callback_details)
-            # ...
-        end
-
-        def do_it_around(some_arg, callback_details)
-            # ...
-        end
-
-        def do_it_after(some_arg, callback_details)
-            # ...
-        end
+      def around_some_method(some_arg)
+        puts "around_some_method: #{some_arg}"
+      end
 
     end
 
+    EasyCallbacks.configure(SomeClass) do
+
+      # named callback
+      before :some_method, :before_some_method
+
+      # named callback
+      around :some_method, :around_some_method
+
+      # anonymous callback
+      after  :some_method do
+        puts "after_some_method: #{call_args[0]}"
+      end
+
+    end
+
+This call:
+
+    SomeClass.new.some_method :some_arg
+
+Produces this output:
+
+    before_some_method: hue
+    some_method: hue
+    around_some_method: hue
+    after_some_method: hue
+
+== Helper Methods
+
+Inside a callback block/method, you can call three helper methods:
+
+    call_args        # returns original arguments given to the call
+    call_block       # returns original block given to the call
+    callback_details # returns details of callback execution
+
 === Callback Details
 
-The second argument is a Hash containing some callback call details:
-
-For named callbacks:
+The `callback_details` helper method will return:
 
     {
-        class: SomeClass,
-        target: :some_method,
-        type: :before,
-        callback_name: :do_it_before,
-        proc: nil
+        target_class: SomeClass,
+        callback_type: :around,
+        target_method_name: :some_method,
+        callback_method_name: :around_some_method,
+        callback_block: nil,
+        return_type: :success, # exclusive for `around` callbacks
+        return_object: nil     # exclusive for `around` callbacks
     }
 
-For anonymous callbacks:
+== Module inclusion
 
-    {
-        class: SomeClass,
-        object: #<SomeClass:0x00000002b65ab0>,
-        target: :some_method,
-        type: :before,
-        callback_name: nil,
-        proc: #<Proc:0x00000002655a20@...>
-    }
+You can call `before`, `around` and `after` methods directly instead of calling them inside of `EasyCallbacks.configure` block. Just include `EasyCallbacks` module:
 
-For around callbacks (with success):
+    class SomeClass
 
-    {
-        class: SomeClass,
-        target: :some_method,
-        type: :around,
-        callback_name: :do_it_around,
-        proc: nil,
-        return_type: :success,
-        return_object: nil
-    }
+      def some_method(some_arg)
+        puts "some_method: #{some_arg}"
+      end
 
-For around callbacks (with error):
+      def before_some_method(some_arg)
+        puts "before_some_method: #{some_arg}"
+      end
 
-    {
-        class: SomeClass,
-        target: :some_method,
-        type: :around,
-        callback_name: :do_it_around,
-        proc: nil,
-        return_type: :error,
-        return_object: #<StandardError: StandardError>
-    }
+      def around_some_method(some_arg)
+        puts "around_some_method: #{some_arg}"
+      end
+
+      include EasyCallbacks
+
+      before :some_method, :before_some_method
+
+      around :some_method, :around_some_method
+
+      after  :some_method do
+        puts "after_some_method: #{call_args[0]}"
+      end
+
+    end
 
 == Singleton Classes Support
 
@@ -91,25 +106,39 @@ It works too:
 
     class SomeClass
 
-        class << self
+      class << self
 
-            def some_method(some_arg)
-                puts some_arg
-            end
-
-            include EasyCallbacks::Base
-
-            # ...
-
+        def some_method(some_arg)
+          puts "some_method: #{some_arg}"
         end
+
+        def before_some_method(some_arg)
+          puts "before_some_method: #{some_arg}"
+        end
+
+        def around_some_method(some_arg)
+          puts "around_some_method: #{some_arg}"
+        end
+
+        include EasyCallbacks
+
+        before :some_method, :before_some_method
+
+        around :some_method, :around_some_method
+
+        after  :some_method do
+          puts "after_some_method: #{call_args[0]}"
+        end
+
+      end
 
     end
 
-    SomeClass.some_method 'some arg'
+    SomeClass.some_method :hue
 
-== Changelog
+== More
 
-See 'changelog.txt' to follow the progress.
+To see more of `EasyCallbacks` usages, please take a look at DummyClass[https://github.com/r4z3c/easy_callbacks/blob/master/spec/support/dummy_class.rb].
 
 ===
 

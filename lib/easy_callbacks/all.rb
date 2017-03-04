@@ -1,0 +1,8 @@
+require 'easy_callbacks/models/target_class'
+require 'easy_callbacks/models/callback'
+require 'easy_callbacks/repositories/base_repository'
+require 'easy_callbacks/repositories/target_classes_repository'
+require 'easy_callbacks/repositories/callbacks_repository'
+require 'easy_callbacks/dsls/target_classes_dsl'
+require 'easy_callbacks/utils/validator'
+require 'easy_callbacks/utils/serializer'
