@@ -1,6 +1,6 @@
 = Easy Callbacks
 
-Provides callbacks support for Ruby classes.
+Provides callback support for Ruby classes.
 
 == Example
 
