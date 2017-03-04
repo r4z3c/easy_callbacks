@@ -19,9 +19,10 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'bundler', '~>1'
   s.add_dependency 'activesupport', '~>4'
-  s.add_dependency 'method_decorator', '~>1'
+  s.add_dependency 'method_decorator', '~>3.0.1'
 
   s.add_development_dependency 'rspec', '~>3'
   s.add_development_dependency 'simplecov', '~>0'
   s.add_development_dependency 'model-builder', '~>2'
+  s.add_development_dependency 'rake'
 end
