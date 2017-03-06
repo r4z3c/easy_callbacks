@@ -35,29 +35,7 @@ module EasyCallbacks
       end
 
       def decorate_method(target_method_name)
-        tci = target_class_instance
-        MethodDecorator.decorate target_class_instance.target_class, target_method_name do
-          EasyCallbacks.execute_callbacks self, tci, :before, target_method_name, nil, call_args, &call_block
-
-          result = error = nil
-          begin
-            result = call_original
-          rescue => e
-            error = e
-          end
-
-          additional_options = error ?
-            { return_type: :error, return_object: error } :
-            { return_type: :success, return_object: result }
-
-          EasyCallbacks.execute_callbacks self, tci, :around, target_method_name, additional_options, call_args, &call_block
-
-          raise error if error
-
-          EasyCallbacks.execute_callbacks self, tci, :after, target_method_name, nil, call_args, &call_block
-
-          result
-        end
+        EasyCallbacks.decorate_method target_class_instance, target_method_name
       end
 
       def target_class_instance=(target_class_instance)

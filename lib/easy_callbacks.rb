@@ -54,6 +54,31 @@ module EasyCallbacks extend ActiveSupport::Concern
       end
     end
 
+    def decorate_method(target_class_instance, target_method_name)
+      tci = target_class_instance
+      MethodDecorator.decorate target_class_instance.target_class, target_method_name do
+        EasyCallbacks.execute_callbacks self, tci, :before, target_method_name, nil, call_args, &call_block
+        original_call_return = EasyCallbacks.call_original self
+        EasyCallbacks.execute_callbacks self, tci, :around, target_method_name, original_call_return, call_args, &call_block
+        raise original_call_return[:return_object] if original_call_return[:return_type].eql? :error
+        EasyCallbacks.execute_callbacks self, tci, :after, target_method_name, nil, call_args, &call_block
+        original_call_return[:return_object]
+      end
+    end
+
+    def call_original(context)
+      result = error = nil
+      begin
+        result = context.send :call_original
+      rescue => e
+        error = e
+      end
+
+      error ?
+      { return_type: :error, return_object: error } :
+      { return_type: :success, return_object: result }
+    end
+
     protected
 
     def validate_target_class_instance(target_class_instance)
